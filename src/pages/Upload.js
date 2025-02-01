@@ -1,12 +1,48 @@
-// src/pages/Upload.js
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 const Upload = () => {
   const [fileName, setFileName] = useState('');
+  const [file, setFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState('');
+  const [fileData, setFileData] = useState(null); // To hold the response data
 
   const handleFileChange = (event) => {
-    setFileName(event.target.files[0]?.name || '');
+    const selectedFile = event.target.files[0];
+    setFile(selectedFile);
+    setFileName(selectedFile?.name || '');
+    console.log('Selected file:', selectedFile); // Logging file data for debugging
+  };
+
+  const handleUpload = async () => {
+    if (!file) {
+      setError("Please select a file to upload.");
+      return;
+    }
+
+    setUploading(true);
+    setError('');
+    setFileData(null); // Reset previous data
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const response = await axios.post('http://127.0.0.1:5000/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      console.log('Upload success:', response.data);
+      setFileData(response.data);  // Store the data to display
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      setError('Error uploading file. Please try again.');
+    } finally {
+      setUploading(false);
+    }
   };
 
   return (
@@ -23,12 +59,27 @@ const Upload = () => {
           onChange={handleFileChange}
         />
       </div>
-      <Link to="/analysis">
-        <button className="analyze-btn">Analyze Report</button>
-      </Link>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+      <button
+        className="analyze-btn"
+        onClick={handleUpload}
+        disabled={uploading}
+      >
+        {uploading ? 'Uploading...' : 'Analyze Report'}
+      </button>
+
+      {/* Display the file data */}
+      {fileData && (
+        <div className="file-data">
+          <h3>File Data:</h3>
+          <pre>{JSON.stringify(fileData, null, 2)}</pre> {/* Show the response in JSON format */}
+        </div>
+      )}
     </div>
   );
 };
 
 export default Upload;
+
+
 

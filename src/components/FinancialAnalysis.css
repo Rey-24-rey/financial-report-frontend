@@ -1,0 +1,16 @@
+.financial-report table {
+  width: 100%;
+  margin-top: 15px;
+  border-collapse: collapse;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.financial-report th, .financial-report td {
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+.financial-report th {
+  background-color: #f4f4f4;
+}
