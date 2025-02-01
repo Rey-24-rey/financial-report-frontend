@@ -1,0 +1,259 @@
+/* index.css */
+
+/* General Reset */
+html, body {
+  height: 100%;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Arial', sans-serif;
+  background-color: #f4f4f9;
+}
+
+/* Container */
+.container {
+  text-align: center;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 80px;
+  max-width: 800px;
+  width: 90%;
+}
+
+/* Headings */
+h1 {
+  font-size: 2rem;
+  color: #000000;
+  margin-bottom: 20px;
+}
+
+p {
+  font-size: 1.1rem;
+  color: #000000;
+  margin-bottom: 30px;
+}
+
+/* Upload Button */
+.upload-btn {
+  font-size: 1.1rem;
+  padding: 12px 20px;
+  background-color: #c0d0d1;
+  color: rgb(21, 253, 0);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.upload-btn:hover {
+  background-color: #f5e619;
+  box-shadow: 0px 6px 12px rgba(0, 225, 255, 0.15);
+}
+
+.upload-btn:focus {
+  outline: none;
+}
+
+/* Upload Page */
+.upload-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
+  padding: 20px;
+}
+
+/* Upload Card */
+.file-upload-card {
+  background-color: #f4f4f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.file-upload-label {
+  display: inline-block;
+  padding: 12px 24px;
+  background-color: #4CAF50;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: background-color 0.3s ease;
+}
+
+.file-upload-label:hover {
+  background-color: #45a049;
+}
+
+.file-upload-input {
+  display: none;
+}
+
+/* Analyze Button */
+.analyze-btn {
+  padding: 12px 30px;
+  font-size: 1.2rem;
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.analyze-btn:hover {
+  background-color: #1976D2;
+}
+
+.analyze-btn:active {
+  background-color: #4c6665;
+}
+
+/* PayPal Donate Button */
+.paypal-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #405f5d;
+  color: white;
+  padding: 12px 40px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  font-size: 16px;
+}
+
+.paypal-btn:hover {
+  background-color: #2563eb;
+}
+
+/* Git Button Container */
+.git-button-container {
+  margin-top: 3rem;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+/* Image Styling */
+.image-container {
+  margin-right: 5px;
+}
+
+.gift-image {
+  width: 24px;
+  height: 20px;
+  margin-right: 5px;
+}
+
+.button-text {
+  font-size: 16px;
+  font-weight: normal;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .container {
+    padding: 60px;
+  }
+
+  .file-upload-card {
+    max-width: 350px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 40px;
+    width: 95%;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  p {
+    font-size: 1rem;
+  }
+
+  .upload-btn, .analyze-btn, .paypal-btn {
+    font-size: 1rem;
+    padding: 10px 20px;
+  }
+
+  .file-upload-card {
+    max-width: 300px;
+  }
+
+  .git-button-container {
+    margin-top: 3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 30px;
+    width: 95%;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+  }
+
+  p {
+    font-size: 0.9rem;
+  }
+
+  .upload-btn, .analyze-btn, .paypal-btn {
+    font-size: 0.9rem;
+    padding: 8px 16px;
+  }
+
+  .file-upload-card {
+    max-width: 280px;
+  }
+
+  .git-button-container {
+    margin-top: 4rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .container {
+    padding: 20px;
+    width: 98%;
+  }
+
+  h1 {
+    font-size: 1.4rem;
+  }
+
+  p {
+    font-size: 0.85rem;
+  }
+
+  .upload-btn, .analyze-btn, .paypal-btn {
+    font-size: 0.85rem;
+    padding: 7px 14px;
+  }
+
+  .file-upload-card {
+    max-width: 250px;
+  }
+
+  .git-button-container {
+    margin-top: 5rem;
+  }
+}
