@@ -1,16 +1,16 @@
 // src/App.js
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Home from './pages/Home';
-import Upload from './pages/Upload';
-import Analysis from './pages/Analysis';
-import PayPalDonateButton from './components/PaypalDonateButton';
-import FinancialAnalysis from './components/FinancialAnalysis';
-import './App.css';
-import './index.css';
+import Home from './pages/Home'; // Assuming you have a Home component
+import Upload from './pages/Upload'; // Assuming you have an Upload component
+import Analysis from './pages/Analysis'; // Assuming you have an Analysis component
+import PayPalDonateButton from './components/PaypalDonateButton'; // Assuming you have a PayPalDonateButton component
+import FinancialAnalysis from './components/FinancialAnalysis'; // Import FinancialAnalysis component
+import './App.css'; // Assuming you have a custom CSS file
+import './index.css'; // Assuming you have an index CSS file
 
 function App() {
-  const [isReportUploaded, setIsReportUploaded] = useState(false);
+  const [isReportUploaded, setIsReportUploaded] = useState(false); // Assuming you need this state for uploaded report
 
   return (
     <Router>
@@ -25,15 +25,15 @@ function App() {
                 <a href="/upload">Upload Your Report</a>
               </button>
 
-              <PayPalDonateButton />
+              <PayPalDonateButton /> {/* Render PayPal Donate Button */}
 
               {/* Conditionally render FinancialAnalysis based on state */}
               {isReportUploaded && <FinancialAnalysis />}
             </div>
           } 
         />
-        <Route path="/upload" element={<Upload />} />
-        <Route path="/analysis" element={<Analysis />} />
+        <Route path="/upload" element={<Upload />} /> {/* Route to Upload page */}
+        <Route path="/analysis" element={<FinancialAnalysis />} /> {/* Direct route to FinancialAnalysis page */}
       </Routes>
     </Router>
   );

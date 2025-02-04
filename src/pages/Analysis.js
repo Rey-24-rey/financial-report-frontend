@@ -8,10 +8,10 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 const Analysis = ({ analysisData }) => {
   if (!analysisData) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
-        <div className="max-w-4xl w-full bg-white p-8 rounded-lg shadow-lg">
-          <h2 className="text-3xl font-bold mb-6">Analysis Results</h2>
-          <p className="text-lg text-red-500">Data not available. Please try again later.</p>
+      <div className="container">
+        <div className="card">
+          <h2 className="title">Analysis Results</h2>
+          <p className="error-message">Data not available. Please try again later.</p>
         </div>
       </div>
     );
@@ -26,21 +26,21 @@ const Analysis = ({ analysisData }) => {
     if (!tableData || !tableData.headers || !tableData.rows.length) return <p>No data available.</p>;
 
     return (
-      <div className="mb-6">
-        <h3 className="text-2xl font-semibold mb-2">{title}</h3>
-        <table className="min-w-full border-collapse border border-gray-300">
+      <div className="table-container">
+        <h3 className="table-title">{title}</h3>
+        <table className="data-table">
           <thead>
-            <tr className="bg-gray-200">
+            <tr className="table-header">
               {tableData.headers.map((header, index) => (
-                <th key={index} className="border border-gray-300 p-2">{header}</th>
+                <th key={index} className="table-cell">{header}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {tableData.rows.map((row, rowIndex) => (
-              <tr key={rowIndex} className="border border-gray-300">
+              <tr key={rowIndex} className="table-row">
                 {row.map((cell, cellIndex) => (
-                  <td key={cellIndex} className="border border-gray-300 p-2">{cell}</td>
+                  <td key={cellIndex} className="table-cell">{cell}</td>
                 ))}
               </tr>
             ))}
@@ -78,9 +78,9 @@ const Analysis = ({ analysisData }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
-      <div className="max-w-4xl w-full bg-white p-8 rounded-lg shadow-lg">
-        <h2 className="text-3xl font-bold mb-6">Analysis Results</h2>
+    <div className="container">
+      <div className="card">
+        <h2 className="title">Analysis Results</h2>
 
         {/* Profit/Loss Table */}
         {renderTable(profitLoss, "Profit and Loss Summary")}
@@ -92,18 +92,18 @@ const Analysis = ({ analysisData }) => {
         {renderTable(productSales, "Product Sales Data")}
 
         {/* Trend Analysis Section */}
-        <div className="space-y-4 mb-6">
-          <h3 className="text-2xl font-semibold">Trend Analysis</h3>
-          <p className="text-lg"><strong>Growth Trend:</strong> {trendData.trend}</p>
-          <div className="w-full h-72">
+        <div className="chart-section">
+          <h3 className="chart-title">Trend Analysis</h3>
+          <p className="trend-description"><strong>Growth Trend:</strong> {trendData.trend}</p>
+          <div className="chart-container">
             <Line data={trendChartData} options={{ responsive: true }} />
           </div>
         </div>
 
         {/* Product Sales Chart */}
-        <div className="space-y-4 mb-6">
-          <h3 className="text-2xl font-semibold">Product Sales Chart</h3>
-          <div className="w-full h-72">
+        <div className="chart-section">
+          <h3 className="chart-title">Product Sales Chart</h3>
+          <div className="chart-container">
             <Bar data={productSalesChartData} options={{ responsive: true }} />
           </div>
         </div>

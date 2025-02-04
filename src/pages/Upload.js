@@ -1,5 +1,21 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import FinancialAnalysis from '../components/FinancialAnalysis'; // Import FinancialAnalysis component
+
+import { Line, Bar } from "react-chartjs-2";
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend } from 'chart.js';
+
+// Register the components explicitly
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  LineElement,
+  PointElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const Upload = () => {
   const [fileName, setFileName] = useState('');
@@ -12,7 +28,6 @@ const Upload = () => {
     const selectedFile = event.target.files[0];
     setFile(selectedFile);
     setFileName(selectedFile?.name || '');
-    console.log('Selected file:', selectedFile); // Logging file data for debugging
   };
 
   const handleUpload = async () => {
@@ -35,10 +50,8 @@ const Upload = () => {
         },
       });
 
-      console.log('Upload success:', response.data);
       setFileData(response.data);  // Store the data to display
     } catch (error) {
-      console.error('Error uploading file:', error);
       setError('Error uploading file. Please try again.');
     } finally {
       setUploading(false);
@@ -72,7 +85,7 @@ const Upload = () => {
       {fileData && (
         <div className="file-data">
           <h3>File Data:</h3>
-          <pre>{JSON.stringify(fileData, null, 2)}</pre> {/* Show the response in JSON format */}
+          <FinancialAnalysis analysisData={fileData} /> {/* Pass the data here */}
         </div>
       )}
     </div>
@@ -80,6 +93,7 @@ const Upload = () => {
 };
 
 export default Upload;
+
 
 
 

@@ -56,26 +56,39 @@ def upload_file():
 
 @app.route('/get-data', methods=['GET'])
 def get_data():
-    # Example: Return static or stored financial data
+    # Return static financial data based on your updated example
     return jsonify({
         "productSales": {
             "headers": ["Product", "Total Sales"],
-            "rows": [["Item A", 220], ["Item B", 330], ["Item C", 200]],
+            "rows": [
+                ["Laptop", 5000],
+                ["Monitor", 1500],
+                ["Phone", 3200],
+                ["Tablet", 2700]
+            ],
             "summary": "The sales data shows the following top-selling products."
         },
         "profitLoss": {
             "headers": ["Metric", "Value"],
             "message": "The current profit indicates that the business is on the right track.",
-            "rows": [["Average Profit", "$150.00"]],
-            "summary": "The company has made a profit of $150.00 based on the current data."
+            "rows": [
+                ["Average Profit", "$3100.00"]
+            ],
+            "summary": "The company has made a profit of $3100.00 based on the current data."
         },
         "trendData": {
             "headers": ["Date", "Sales"],
-            "rows": [["2025-01-01", 100], ["2025-01-02", 150], ["2025-01-03", 200]],
+            "rows": [
+                ["2025-01-10", 5000],
+                ["2025-01-11", 3200],
+                ["2025-01-12", 2700],
+                ["2025-01-13", 1500]
+            ],
             "summary": "The sales trend over the last few days shows positive growth.",
             "trend": "Overall, there is a positive growth trend."
         }
     })
+
 
 def process_excel(filename):
     df = pd.read_excel(filename)

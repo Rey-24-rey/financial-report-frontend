@@ -259,3 +259,29 @@ p {
 }
 
 
+.styled-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.styled-table th,
+.styled-table td {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+.styled-table th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+.table-container {
+  margin: 20px 0;
+}
+
+.summary-text {
+  font-style: italic;
+  color: #555;
+}
+
