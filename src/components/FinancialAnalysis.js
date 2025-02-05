@@ -15,6 +15,7 @@ const FinancialAnalysis = ({ analysisData }) => {
   const profitLoss = analysisData.profitLoss || { headers: [], rows: [] };
   const growthAnalysis = analysisData.growthAnalysis || {};
   const lowSalesProducts = analysisData.lowSalesProducts || { headers: [], rows: [] };
+  const totalSales = analysisData.totalSales || 0;
 
   // Function to render tables
   const renderTable = (tableData, title) => {
@@ -96,6 +97,12 @@ const FinancialAnalysis = ({ analysisData }) => {
     <div className="container">
       <h2>Financial Analysis Results</h2>
       
+      {/* Display Total Sales with styling */}
+      <div className="total-sales">
+        <h3>Total Sales:</h3>
+        <p className="total-sales-amount">Ksh{totalSales.toFixed(2)}</p>
+      </div>
+
       {/* Render Profit and Loss table */}
       {renderTable(profitLoss, "Profit and Loss Summary")}
       
@@ -121,6 +128,3 @@ const FinancialAnalysis = ({ analysisData }) => {
 };
 
 export default FinancialAnalysis;
-
-
-

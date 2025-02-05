@@ -57,7 +57,7 @@ def process_excel(filename):
     df['date'] = pd.to_datetime(df['date'], errors='coerce')
     df['sales'] = pd.to_numeric(df['sales'], errors='coerce').fillna(0)
 
-    # Total Sales
+    # Calculate Total Sales (sum of all products)
     total_sales = df['sales'].sum()
 
     # Sales per product
@@ -66,14 +66,13 @@ def process_excel(filename):
     # Products with lower sales
     avg_sales = df['sales'].mean()
     low_sales_products = (
-    df[df['sales'] < avg_sales]
-    .groupby('product')['sales']
-    .sum()
-    .reset_index()
-    .sort_values(by="sales", ascending=True)  # Sort in ascending order
-    .values.tolist()
-)
-
+        df[df['sales'] < avg_sales]
+        .groupby('product')['sales']
+        .sum()
+        .reset_index()
+        .sort_values(by="sales", ascending=True)  # Sort in ascending order
+        .values.tolist()
+    )
 
     # Sales Growth Analysis
     df['day'] = df['date'].dt.date
@@ -111,7 +110,7 @@ def process_excel(filename):
 
     # Prepare output data
     analysis_data = {
-        "totalSales": convert_numpy(total_sales),
+        "totalSales": convert_numpy(total_sales),  # Total sales for all products combined
         "productSales": {
             "headers": ["Product", "Total Sales"],
             "rows": product_sales,
