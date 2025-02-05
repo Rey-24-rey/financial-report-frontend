@@ -1,10 +1,9 @@
-/* index.css */
-
 /* General Reset */
 html, body {
   height: 100%;
   margin: 0;
   display: flex;
+  flex-direction: column; /* Ensures proper stacking */
   justify-content: center;
   align-items: center;
   font-family: 'Arial', sans-serif;
@@ -17,8 +16,8 @@ html, body {
   background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  padding: 80px;
-  max-width: 800px;
+  padding: 40px;
+  max-width: 100%;
   width: 90%;
 }
 
@@ -59,13 +58,7 @@ p {
 
 /* Upload Page */
 .upload-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  text-align: center;
-  padding: 20px;
+  min-height: 100vh;
 }
 
 /* Upload Card */
@@ -163,14 +156,83 @@ p {
   font-weight: normal;
 }
 
+/* Table Styling */
+.table-container {
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  max-width: 100%;
+  max-height: 200px; /* Set a maximum height for scrollability */
+  overflow-x: auto; /* Enables horizontal scrolling */
+  overflow-y: auto; /* Enables vertical scrolling */
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 auto;
+}
+
+.data-table th, .data-table td {
+  padding: 12px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+.data-table th {
+  background-color: #f2f2f2;
+}
+
+/* Chart Section Styling */
+.chart-section {
+  margin-top: 0;
+  padding: 0;
+  text-align: center;
+  overflow-x: auto; /* Enables horizontal scroll */
+  white-space: nowrap; /* Prevents wrapping */
+}
+
+/* Product List Starts from the Beginning */
+.product-list {
+  text-align: left;
+  width: 100%;
+  margin: 20px 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.product-list .product {
+  flex: 1 1 10px;
+  margin: 10px;
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.product-name {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
   .container {
-    padding: 60px;
+    padding: 40px;
+    width: 90%;
   }
 
   .file-upload-card {
     max-width: 350px;
+  }
+
+  /* Adjust Chart and Table for Smaller Screens */
+  .chart-section {
+    padding: 0 10px;
+    max-width: 100%;
   }
 }
 
@@ -200,6 +262,18 @@ p {
   .git-button-container {
     margin-top: 3rem;
   }
+
+  /* Horizontal Scrolling for Charts */
+  .chart-section {
+    overflow-x: scroll;
+    white-space: nowrap;
+  }
+
+  /* Make Product List More Compact */
+  .product-list .product {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
 }
 
 @media (max-width: 480px) {
@@ -227,6 +301,10 @@ p {
 
   .git-button-container {
     margin-top: 4rem;
+  }
+
+  .chart-section {
+    overflow-x: scroll;
   }
 }
 
@@ -256,32 +334,8 @@ p {
   .git-button-container {
     margin-top: 5rem;
   }
+
+  .chart-section {
+    overflow-x: scroll;
+  }
 }
-
-
-.styled-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.styled-table th,
-.styled-table td {
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  text-align: center;
-}
-
-.styled-table th {
-  background-color: #f4f4f4;
-  font-weight: bold;
-}
-
-.table-container {
-  margin: 20px 0;
-}
-
-.summary-text {
-  font-style: italic;
-  color: #555;
-}
-

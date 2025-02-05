@@ -2,21 +2,18 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
 import pandas as pd
-import pdfplumber
-import pytesseract
-from docx import Document
-from PIL import Image
+import numpy as np
 
 app = Flask(__name__)
-CORS(app, origins=["http://localhost:3000"])  # This will allow all origins; for production, specify the frontend URL
+CORS(app, origins=["http://localhost:3000"])  # Allow frontend access
 
 # Create an uploads folder to save files
 UPLOAD_FOLDER = 'uploads/'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# Allowed file extensions for uploading
-ALLOWED_EXTENSIONS = {'xlsx', 'xls', 'docx', 'pdf', 'jpg', 'jpeg', 'png'}
+# Allowed file extensions
+ALLOWED_EXTENSIONS = {'xlsx', 'xls'}
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -34,121 +31,114 @@ def upload_file():
     if file and allowed_file(file.filename):
         filename = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
         file.save(filename)
-
-        # Debugging: Check file details after saving
-        print(f"File uploaded: {file.filename}, Size: {os.path.getsize(filename)} bytes")
-
-        # Process the file based on its extension
-        file_extension = filename.rsplit('.', 1)[1].lower()
-        print(f"Processing file of type: {file_extension}")
-
-        if file_extension in ['xlsx', 'xls']:
-            return process_excel(filename)
-        elif file_extension == 'docx':
-            return process_word(filename)
-        elif file_extension == 'pdf':
-            return process_pdf(filename)
-        elif file_extension in ['jpg', 'jpeg', 'png']:
-            return process_image(filename)
+        return process_excel(filename)
 
     return jsonify({"error": "Invalid file format"}), 400
 
-
 @app.route('/get-data', methods=['GET'])
 def get_data():
-    # Return static financial data based on your updated example
-    return jsonify({
-        "productSales": {
-            "headers": ["Product", "Total Sales"],
-            "rows": [
-                ["Laptop", 5000],
-                ["Monitor", 1500],
-                ["Phone", 3200],
-                ["Tablet", 2700]
-            ],
-            "summary": "The sales data shows the following top-selling products."
-        },
-        "profitLoss": {
-            "headers": ["Metric", "Value"],
-            "message": "The current profit indicates that the business is on the right track.",
-            "rows": [
-                ["Average Profit", "$3100.00"]
-            ],
-            "summary": "The company has made a profit of $3100.00 based on the current data."
-        },
-        "trendData": {
-            "headers": ["Date", "Sales"],
-            "rows": [
-                ["2025-01-10", 5000],
-                ["2025-01-11", 3200],
-                ["2025-01-12", 2700],
-                ["2025-01-13", 1500]
-            ],
-            "summary": "The sales trend over the last few days shows positive growth.",
-            "trend": "Overall, there is a positive growth trend."
-        }
-    })
-
+    return jsonify({"message": "Upload a file to get analysis."})
 
 def process_excel(filename):
     df = pd.read_excel(filename)
-    analysis_data = {}
 
-    # Product Sales Table
-    if 'products' in df.columns and 'sales' in df.columns:
-        product_sales = df.groupby('products')['sales'].sum().reset_index()
-        analysis_data['productSales'] = {
+    # Convert column names to lowercase
+    df.columns = df.columns.str.lower()
+
+    print("\n### Debug: Full DataFrame ###\n")
+    print(df.head())  # Print first few rows for debugging
+    print("\n### Debug: Columns in File ###\n", df.columns)
+
+    required_columns = {'product', 'date', 'sales'}
+    if not required_columns.issubset(df.columns):
+        return jsonify({"error": f"Missing required columns: {required_columns - set(df.columns)}"}), 400
+
+    # Convert data types
+    df['date'] = pd.to_datetime(df['date'], errors='coerce')
+    df['sales'] = pd.to_numeric(df['sales'], errors='coerce').fillna(0)
+
+    # Total Sales
+    total_sales = df['sales'].sum()
+
+    # Sales per product
+    product_sales = df.groupby('product')['sales'].sum().reset_index().values.tolist()
+
+    # Products with lower sales
+    avg_sales = df['sales'].mean()
+    low_sales_products = (
+    df[df['sales'] < avg_sales]
+    .groupby('product')['sales']
+    .sum()
+    .reset_index()
+    .sort_values(by="sales", ascending=True)  # Sort in ascending order
+    .values.tolist()
+)
+
+
+    # Sales Growth Analysis
+    df['day'] = df['date'].dt.date
+    df['week'] = df['date'].dt.strftime('%Y-%U')
+    df['month'] = df['date'].dt.to_period('M')
+    df['year'] = df['date'].dt.year
+
+    # Grouped Sales Data
+    daily_sales = df.groupby('day')['sales'].sum().reset_index()
+    weekly_sales = df.groupby('week')['sales'].sum().reset_index()
+    monthly_sales = df.groupby('month')['sales'].sum().reset_index()
+    yearly_sales = df.groupby('year')['sales'].sum().reset_index()
+
+    # Calculate Growth Percentage
+    def percent_change(series):
+        return series.pct_change().fillna(0).replace([np.inf, -np.inf], 0).astype(float).tolist()
+
+    growth_data = {
+        "daily_growth": percent_change(daily_sales['sales']),
+        "weekly_growth": percent_change(weekly_sales['sales']),
+        "monthly_growth": percent_change(monthly_sales['sales']),
+        "yearly_growth": percent_change(yearly_sales['sales']),
+    }
+
+    # Profit/Loss Analysis
+    total_profit_or_loss = total_sales - (len(df) * avg_sales)
+
+    # Convert int64 types for JSON serialization
+    def convert_numpy(obj):
+        if isinstance(obj, np.integer):
+            return int(obj)
+        elif isinstance(obj, np.floating):
+            return float(obj)
+        return obj
+
+    # Prepare output data
+    analysis_data = {
+        "totalSales": convert_numpy(total_sales),
+        "productSales": {
             "headers": ["Product", "Total Sales"],
-            "rows": product_sales.values.tolist(),
-            "summary": "The sales data shows the following top-selling products."
-        }
-
-    # Sales Trend Table
-    if 'sales' in df.columns and 'date' in df.columns:
-        sales_trend = df[['date', 'sales']].dropna()
-        analysis_data['trendData'] = {
-            "headers": ["Date", "Sales"],
-            "rows": sales_trend.values.tolist(),
-            "summary": "The sales trend over the last few days shows positive growth.",
-            "trend": "Overall, there is a positive growth trend."
-        }
-
-    # Profit/Loss Table (Structured as Table Instead of Text)
-    if 'sales' in df.columns:
-        mean_sales = df['sales'].mean()
-        analysis_data['profitLoss'] = {
+            "rows": product_sales,
+            "summary": "Total sales per product."
+        },
+        "lowSalesProducts": {
+            "headers": ["Product", "Total Sales"],
+            "rows": low_sales_products,
+            "summary": "Products with lower-than-average sales."
+        },
+        "growthAnalysis": {
+            "daily_growth": growth_data['daily_growth'],
+            "weekly_growth": growth_data['weekly_growth'],
+            "monthly_growth": growth_data['monthly_growth'],
+            "yearly_growth": growth_data['yearly_growth'],
+            "summary": "Sales growth trends."
+        },
+        "profitLoss": {
             "headers": ["Metric", "Value"],
-            "rows": [["Average Profit", f"${mean_sales:.2f}"]],
-            "summary": f"The company has made a profit of ${mean_sales:.2f} based on the current data.",
-            "message": "The current profit indicates that the business is on the right track."
+            "rows": [["Profit/Loss", f"${total_profit_or_loss:.2f}"]],
+            "summary": "Total profit/loss based on sales data."
         }
+    }
 
     return jsonify(analysis_data)
 
-
-
-def process_word(filename):
-    doc = Document(filename)
-    text = "\n".join([para.text for para in doc.paragraphs])
-    print("Word File Processed:\n", text)  # Print full text content
-    return jsonify({"data": text})
-
-def process_pdf(filename):
-    with pdfplumber.open(filename) as pdf:
-        text = ""
-        for page in pdf.pages:
-            text += page.extract_text()
-    print("PDF File Processed:\n", text)  # Print full extracted text
-    return jsonify({"data": text})
-
-def process_image(filename):
-    image = Image.open(filename)
-    text = pytesseract.image_to_string(image)
-    print("Image File Processed:\n", text)  # Print full OCR text
-    return jsonify({"data": text})
-
 if __name__ == '__main__':
     app.run(debug=True)
-
 
 

@@ -17,9 +17,9 @@ const Analysis = ({ analysisData }) => {
     );
   }
 
-  const trendData = analysisData.trendData || { headers: [], rows: [] };
   const productSales = analysisData.productSales || { headers: [], rows: [] };
   const profitLoss = analysisData.profitLoss || { headers: [], rows: [] };
+  const growthAnalysis = analysisData.growthAnalysis || {};
 
   // Function to render tables
   const renderTable = (tableData, title) => {
@@ -52,11 +52,11 @@ const Analysis = ({ analysisData }) => {
 
   // Chart data for trend analysis
   const trendChartData = {
-    labels: trendData.rows.map(row => row[0]), // First column as labels (Dates)
+    labels: growthAnalysis.daily_growth || [], // Display growth data if available
     datasets: [
       {
-        label: 'Sales Trend',
-        data: trendData.rows.map(row => row[1]), // Second column as data (Sales)
+        label: 'Sales Growth (Daily)',
+        data: growthAnalysis.daily_growth || [], // Sales growth (daily)
         borderColor: 'rgba(75,192,192,1)',
         fill: false,
       }
@@ -81,31 +81,18 @@ const Analysis = ({ analysisData }) => {
     <div className="container">
       <div className="card">
         <h2 className="title">Analysis Results</h2>
+        
+        {renderTable(productSales, "Product Sales")}
+        {renderTable(profitLoss, "Profit/Loss Summary")}
 
-        {/* Profit/Loss Table */}
-        {renderTable(profitLoss, "Profit and Loss Summary")}
-
-        {/* Sales Trend Table */}
-        {renderTable(trendData, "Sales Trend Data")}
-
-        {/* Product Sales Table */}
-        {renderTable(productSales, "Product Sales Data")}
-
-        {/* Trend Analysis Section */}
-        <div className="chart-section">
-          <h3 className="chart-title">Trend Analysis</h3>
-          <p className="trend-description"><strong>Growth Trend:</strong> {trendData.trend}</p>
-          <div className="chart-container">
-            <Line data={trendChartData} options={{ responsive: true }} />
-          </div>
+        <div className="chart-container">
+          <h3 className="chart-title">Sales Trend (Weekly)</h3>
+          <Line data={trendChartData} />
         </div>
 
-        {/* Product Sales Chart */}
-        <div className="chart-section">
-          <h3 className="chart-title">Product Sales Chart</h3>
-          <div className="chart-container">
-            <Bar data={productSalesChartData} options={{ responsive: true }} />
-          </div>
+        <div className="chart-container">
+          <h3 className="chart-title">Product Sales (Bar Chart)</h3>
+          <Bar data={productSalesChartData} />
         </div>
       </div>
     </div>
@@ -113,5 +100,7 @@ const Analysis = ({ analysisData }) => {
 };
 
 export default Analysis;
+
+
 
 
